@@ -1,0 +1,70 @@
+[gd_scene load_steps=6 format=3 uid="uid://bkexg38mocvq7"]
+
+[ext_resource type="Texture2D" uid="uid://dgrf05n4ub3ak" path="res://assets/Humble Gift - Paper UI System v1.1/Sprites/Book Desk/4.png" id="1_u81ku"]
+[ext_resource type="Texture2D" uid="uid://kqew361kj67f" path="res://assets/Humble Gift - Paper UI System v1.1/Sprites/Paper UI Pack/Folding & Cutout/8 Shop/1.png" id="2_2tfbb"]
+[ext_resource type="Texture2D" uid="uid://b41wsppc46b8d" path="res://assets/Humble Gift - Paper UI System v1.1/Sprites/Content/5 Holders/2.png" id="3_iysyy"]
+[ext_resource type="Texture2D" uid="uid://bhbbtd556dr38" path="res://assets/Humble Gift - Paper UI System v1.1/Sprites/Content/5 Holders/19.png" id="4_ny0ke"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_78n2u"]
+texture = ExtResource("3_iysyy")
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_u81ku")
+metadata/_edit_lock_ = true
+
+[node name="NinePatchRect" type="NinePatchRect" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -355.90915
+offset_right = 355.90915
+offset_bottom = 679.0
+grow_horizontal = 2
+texture = ExtResource("2_2tfbb")
+region_rect = Rect2(10.069275, 18.014038, 398.16223, 429.98596)
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -95.0
+offset_top = -229.0
+offset_right = 97.0
+offset_bottom = -37.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_78n2u")
+metadata/_edit_lock_ = true
+
+[node name="19" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -186.0
+offset_top = 50.0
+offset_right = -106.0
+offset_bottom = 66.0
+grow_horizontal = 2
+scale = Vector2(4.625, 4.625)
+texture = ExtResource("4_ny0ke")
+metadata/_edit_lock_ = true
