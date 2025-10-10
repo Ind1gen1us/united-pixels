@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://bkexg38mocvq7"]
+[gd_scene load_steps=9 format=3 uid="uid://bkexg38mocvq7"]
 
 [ext_resource type="Texture2D" uid="uid://dgrf05n4ub3ak" path="res://assets/Humble Gift - Paper UI System v1.1/Sprites/Book Desk/4.png" id="1_u81ku"]
 [ext_resource type="Texture2D" uid="uid://kqew361kj67f" path="res://assets/Humble Gift - Paper UI System v1.1/Sprites/Paper UI Pack/Folding & Cutout/8 Shop/1.png" id="2_2tfbb"]
@@ -9,6 +9,8 @@
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_78n2u"]
 texture = ExtResource("3_iysyy")
+
+[sub_resource type="AudioStreamMicrophone" id="AudioStreamMicrophone_78n2u"]
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -136,3 +138,8 @@ time = 0.1
 x_size = Vector2(20, 0)
 transition = 7
 metadata/_custom_type_script = "uid://i6b5d472gxi4"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamMicrophone_78n2u")
+autoplay = true
+bus = &"voice_record"
