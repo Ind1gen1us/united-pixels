@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://bkexg38mocvq7"]
+[gd_scene load_steps=11 format=3 uid="uid://bkexg38mocvq7"]
 
 [ext_resource type="Texture2D" uid="uid://dgrf05n4ub3ak" path="res://assets/Humble Gift - Paper UI System v1.1/Sprites/Book Desk/4.png" id="1_u81ku"]
 [ext_resource type="Texture2D" uid="uid://kqew361kj67f" path="res://assets/Humble Gift - Paper UI System v1.1/Sprites/Paper UI Pack/Folding & Cutout/8 Shop/1.png" id="2_2tfbb"]
@@ -6,6 +6,8 @@
 [ext_resource type="Texture2D" uid="uid://bhbbtd556dr38" path="res://assets/Humble Gift - Paper UI System v1.1/Sprites/Content/5 Holders/19.png" id="4_ny0ke"]
 [ext_resource type="StyleBox" uid="uid://c547uw2ujwt7i" path="res://ressources/UI/menu_button.tres" id="5_ny0ke"]
 [ext_resource type="Script" uid="uid://i6b5d472gxi4" path="res://scripts/ui_animation_component.gd" id="6_78n2u"]
+[ext_resource type="Script" uid="uid://be3pivv015je0" path="res://scripts/audio_handling.gd" id="7_ofy2k"]
+[ext_resource type="Script" uid="uid://cb2a5jsicrjkw" path="res://scripts/audio_transcription.gd" id="8_ypw4e"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_78n2u"]
 texture = ExtResource("3_iysyy")
@@ -96,6 +98,7 @@ theme_override_styles/pressed = ExtResource("5_ny0ke")
 theme_override_styles/hover = ExtResource("5_ny0ke")
 theme_override_styles/disabled = ExtResource("5_ny0ke")
 theme_override_styles/focus = ExtResource("5_ny0ke")
+text = "Record"
 icon_alignment = 1
 
 [node name="UIAnimationComponent" type="Node" parent="VBoxContainer/Button"]
@@ -113,6 +116,7 @@ theme_override_styles/pressed = ExtResource("5_ny0ke")
 theme_override_styles/hover = ExtResource("5_ny0ke")
 theme_override_styles/disabled = ExtResource("5_ny0ke")
 theme_override_styles/focus = ExtResource("5_ny0ke")
+text = "Stop"
 icon_alignment = 1
 
 [node name="UIAnimationComponent" type="Node" parent="VBoxContainer/Button2"]
@@ -139,7 +143,18 @@ x_size = Vector2(20, 0)
 transition = 7
 metadata/_custom_type_script = "uid://i6b5d472gxi4"
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+[node name="AudioHandling" type="Node" parent="."]
+script = ExtResource("7_ofy2k")
+
+[node name="WhisperAPI" type="Node" parent="AudioHandling"]
+script = ExtResource("8_ypw4e")
+
+[node name="HTTPRequest" type="HTTPRequest" parent="AudioHandling/WhisperAPI"]
+
+[node name="Microphone" type="AudioStreamPlayer" parent="AudioHandling"]
 stream = SubResource("AudioStreamMicrophone_78n2u")
 autoplay = true
 bus = &"voice_record"
+
+[connection signal="pressed" from="VBoxContainer/Button" to="AudioHandling" method="start_recording"]
+[connection signal="pressed" from="VBoxContainer/Button2" to="AudioHandling" method="stop_recording_and_transcribe"]

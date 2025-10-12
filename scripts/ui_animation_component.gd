@@ -27,13 +27,13 @@ func animate_tween(final_value:Vector2) -> void:
 	
 
 func focus() -> void:
-	print("pressed")
+	#print("pressed")
 	unfocus.emit(buttons) # unfocusing all the other buttons first
 	if not focused:
 		var new_size = default_size + x_size
 		animate_tween(new_size) 
 		focused = not focused
-	print(focused)
+	#print(focused)
 	
 func _on_unfocus(button) -> void:
 	for element in button:
