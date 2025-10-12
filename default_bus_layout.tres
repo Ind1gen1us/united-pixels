@@ -1,19 +1,33 @@
-[gd_resource type="AudioBusLayout" load_steps=3 format=3 uid="uid://ddt30mfeb2c5i"]
-
-[sub_resource type="AudioEffectRecord" id="AudioEffectRecord_j3pel"]
-resource_name = "Record"
+[gd_resource type="AudioBusLayout" load_steps=5 format=3 uid="uid://ddt30mfeb2c5i"]
 
 [sub_resource type="AudioEffectEQ10" id="AudioEffectEQ10_j3pel"]
 resource_name = "EQ10"
 
+[sub_resource type="AudioEffectLimiter" id="AudioEffectLimiter_j3pel"]
+resource_name = "Limiter"
+threshold_db = -1.0
+soft_clip_db = 0.5
+
+[sub_resource type="AudioEffectCompressor" id="AudioEffectCompressor_j3pel"]
+resource_name = "Compressor"
+threshold = -20.0
+release_ms = 100.0
+
+[sub_resource type="AudioEffectRecord" id="AudioEffectRecord_j3pel"]
+resource_name = "Record"
+
 [resource]
 bus/1/name = &"voice_record"
 bus/1/solo = false
-bus/1/mute = true
+bus/1/mute = false
 bus/1/bypass_fx = false
 bus/1/volume_db = 0.0
 bus/1/send = &"Master"
-bus/1/effect/0/effect = SubResource("AudioEffectRecord_j3pel")
-bus/1/effect/0/enabled = false
-bus/1/effect/1/effect = SubResource("AudioEffectEQ10_j3pel")
+bus/1/effect/0/effect = SubResource("AudioEffectEQ10_j3pel")
+bus/1/effect/0/enabled = true
+bus/1/effect/1/effect = SubResource("AudioEffectLimiter_j3pel")
 bus/1/effect/1/enabled = true
+bus/1/effect/2/effect = SubResource("AudioEffectCompressor_j3pel")
+bus/1/effect/2/enabled = true
+bus/1/effect/3/effect = SubResource("AudioEffectRecord_j3pel")
+bus/1/effect/3/enabled = true

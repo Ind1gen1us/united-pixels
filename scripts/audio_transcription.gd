@@ -1,8 +1,8 @@
 extends Node
 
 # setting this to the openai API key
+@onready var http_request: HTTPRequest= $HTTPRequest
 var API_KEY: String
-var http_request: HTTPRequest
 var audio_recording: AudioStreamWAV
 
 func _ready():
@@ -19,7 +19,7 @@ func _ready():
 	if API_KEY.is_empty():
 		push_error("API key not found in secrets.cfg!")
 		return
-	$HTTPRequest.request_completed.connect(_on_transcription_complete)
+	http_request.request_completed.connect(_on_transcription_complete)
 
 
 # Calling this function with the recorded audio
@@ -41,7 +41,7 @@ func transcribe_audio(audio_stream: AudioStreamWAV):
 	# Add model part
 	body.append_array(("--" + boundary + "\r\n").to_utf8_buffer())
 	body.append_array('Content-Disposition: form-data; name="model"\r\n\r\n'.to_utf8_buffer())
-	body.append_array("whisper-1\r\n".to_utf8_buffer())
+	body.append_array("whisper-large-v3\r\n".to_utf8_buffer())
 	
 	# End boundary
 	body.append_array(("--" + boundary + "--\r\n").to_utf8_buffer())
@@ -52,8 +52,8 @@ func transcribe_audio(audio_stream: AudioStreamWAV):
 		"Content-Type: multipart/form-data; boundary=" + boundary
 	]
 	
-	http_request.request(
-		"https://api.openai.com/v1/audio/transcriptions",
+	http_request.request_raw(
+		"https://api.groq.com/openai/v1/audio/transcriptions",
 		headers,
 		HTTPClient.METHOD_POST,
 		body

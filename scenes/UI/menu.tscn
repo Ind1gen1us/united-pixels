@@ -153,6 +153,7 @@ script = ExtResource("8_ypw4e")
 
 [node name="Microphone" type="AudioStreamPlayer" parent="AudioHandling"]
 stream = SubResource("AudioStreamMicrophone_78n2u")
+volume_db = 10.0
 autoplay = true
 bus = &"voice_record"
 
