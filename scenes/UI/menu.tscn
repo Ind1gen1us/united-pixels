@@ -17,11 +17,8 @@ texture = ExtResource("3_iysyy")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ofy2k"]
 content_margin_left = 5.0
+content_margin_right = 5.0
 draw_center = false
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
 border_color = Color(0.050980393, 0.5647059, 0.40784314, 1)
 corner_radius_top_left = 4
 corner_radius_top_right = 4
@@ -189,7 +186,7 @@ anchor_bottom = 0.5
 offset_left = -166.0
 offset_top = 28.0
 offset_right = 162.0
-offset_bottom = 74.0
+offset_bottom = 206.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/default_color = Color(0.050980393, 0.5647059, 0.40784314, 1)
