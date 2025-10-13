@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://bkexg38mocvq7"]
+[gd_scene load_steps=17 format=3 uid="uid://bkexg38mocvq7"]
 
 [ext_resource type="Texture2D" uid="uid://dgrf05n4ub3ak" path="res://assets/Humble Gift - Paper UI System v1.1/Sprites/Book Desk/4.png" id="1_u81ku"]
 [ext_resource type="Texture2D" uid="uid://kqew361kj67f" path="res://assets/Humble Gift - Paper UI System v1.1/Sprites/Paper UI Pack/Folding & Cutout/8 Shop/1.png" id="2_2tfbb"]
@@ -9,6 +9,7 @@
 [ext_resource type="Script" uid="uid://be3pivv015je0" path="res://scripts/audio_handling.gd" id="7_ofy2k"]
 [ext_resource type="Script" uid="uid://cb2a5jsicrjkw" path="res://scripts/audio_transcription.gd" id="8_ypw4e"]
 [ext_resource type="FontFile" uid="uid://dhmn8hup8v5gs" path="res://assets/fonts/Retrogression-Regular.otf" id="9_ypw4e"]
+[ext_resource type="Texture2D" uid="uid://dxjyhdo1xliqc" path="res://assets/images/vecteezy_pixel-art-illustration-podcast-mic-pixel.png" id="10_aklih"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_78n2u"]
 texture = ExtResource("3_iysyy")
@@ -30,6 +31,27 @@ resource_name = "transcribed_text"
 script/source = "extends RichTextLabel
 "
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wav1i"]
+
+[sub_resource type="GDScript" id="GDScript_3b8ea"]
+resource_name = "record_indicator"
+script/source = "extends Sprite2D
+
+var shader_material := preload(\"res://shaders/outline.gdshader\")
+var default_material
+var shader_applied:= false
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	default_material = material
+
+func apply_shader() -> void:
+	if not shader_applied:
+		default_material.shader = shader_material
+	else:
+		default_material.shader = null
+	shader_applied = not shader_applied
+"
+
 [node name="Control" type="Control"]
 layout_mode = 3
 anchors_preset = 15
@@ -41,6 +63,7 @@ offset_right = -5.0
 offset_bottom = 32.0
 grow_horizontal = 2
 grow_vertical = 2
+metadata/_edit_lock_ = true
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 1
@@ -197,6 +220,13 @@ theme_override_font_sizes/normal_font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxFlat_ofy2k")
 threaded = true
 script = SubResource("GDScript_ofy2k")
+
+[node name="RecordIndicator" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_wav1i")
+position = Vector2(1192, 67.99999)
+scale = Vector2(0.316, 0.316)
+texture = ExtResource("10_aklih")
+script = SubResource("GDScript_3b8ea")
 
 [connection signal="pressed" from="VBoxContainer/Button" to="AudioHandling" method="start_recording"]
 [connection signal="pressed" from="VBoxContainer/Button2" to="AudioHandling" method="stop_recording_and_transcribe"]
