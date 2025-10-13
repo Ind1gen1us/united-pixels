@@ -1,65 +1,147 @@
 extends Node
 
-# setting this to the openai API key
-@onready var http_request: HTTPRequest= $HTTPRequest
-var API_KEY: String
-var audio_recording: AudioStreamWAV
+# AssemblyAI API key (environment variable)
+var API_KEY: String = ""
+
+const BASE_URL = "https://api.assemblyai.com"
+
+var http_request: HTTPRequest
+var transcript_id: String = ""
 
 func _ready():
+	# Loading API key from config
 	var config = ConfigFile.new()
 	var err = config.load("res://secrets.cfg")
-	
-	if err != OK:
-		push_error("Could not load secrets.cfg!")
+	if err == OK:
+		API_KEY = config.get_value("api", "assemblyai_key", "")
+	else:
+		print("Error in config file: " + str(err) +"\n")
 		return
-	
-	# getting the "openai_key" in the [api] section of the config. It is defaulted to ""
-	API_KEY = config.get_value("api", "openai_key", "")
-	
-	if API_KEY.is_empty():
-		push_error("API key not found in secrets.cfg!")
-		return
-	http_request.request_completed.connect(_on_transcription_complete)
+	http_request = HTTPRequest.new()
+	add_child(http_request)
+	http_request.request_completed.connect(_on_request_complete)
 
-
-# Calling this function with the recorded audio
+# calling this with the recorded audio
 func transcribe_audio(audio_stream: AudioStreamWAV):
-	# Converting audio to WAV bytes
-	var audio_data = audio_stream.data
+	# Uploading local file
+	upload_local_file(audio_stream)
+
+func upload_local_file(audio_stream: AudioStreamWAV):
+	print("Uploading audio file..."+ "\n")
 	
-	# Creating multipart form data
-	var boundary = "----GodotWhisperBoundary"
-	var body = PackedByteArray()
+	# Creating WAV file bytes
+	var audio_data = create_wav_file(audio_stream.data, audio_stream.mix_rate)
 	
-	# Add file part
-	body.append_array(("--" + boundary + "\r\n").to_utf8_buffer())
-	body.append_array('Content-Disposition: form-data; name="file"; filename="audio.wav"\r\n'.to_utf8_buffer())
-	body.append_array("Content-Type: audio/wav\r\n\r\n".to_utf8_buffer())
-	body.append_array(create_wav_file(audio_data, audio_stream.mix_rate))
-	body.append_array("\r\n".to_utf8_buffer())
-	
-	# Add model part
-	body.append_array(("--" + boundary + "\r\n").to_utf8_buffer())
-	body.append_array('Content-Disposition: form-data; name="model"\r\n\r\n'.to_utf8_buffer())
-	body.append_array("whisper-large-v3\r\n".to_utf8_buffer())
-	
-	# End boundary
-	body.append_array(("--" + boundary + "--\r\n").to_utf8_buffer())
-	
-	# Send request
 	var headers = [
-		"Authorization: Bearer " + API_KEY,
-		"Content-Type: multipart/form-data; boundary=" + boundary
+		"authorization: " + API_KEY
+	]
+	
+	# Upload
+	http_request.request_raw(
+		BASE_URL + "/v2/upload",
+		headers,
+		HTTPClient.METHOD_POST,
+		audio_data
+	)
+
+func create_transcript_request(audio_url: String):
+	print("Creating transcript request..."+ "\n")
+	
+	# Create request data
+	var data = {
+		"audio_url": audio_url,
+		"speech_model": "universal"
+	}
+	
+	var json_string = JSON.stringify(data)
+	var body = json_string.to_utf8_buffer()
+	
+	var headers = [
+		"authorization: " + API_KEY,
+		"Content-Type: application/json"
 	]
 	
 	http_request.request_raw(
-		"https://api.groq.com/openai/v1/audio/transcriptions",
+		BASE_URL + "/v2/transcript",
 		headers,
 		HTTPClient.METHOD_POST,
 		body
 	)
+
+func poll_transcript():
+	print("Polling transcript status...\n")
 	
-	print("Sending audio to Whisper API...")
+	var headers = [
+		"authorization: " + API_KEY
+	]
+	
+	var polling_endpoint = BASE_URL + "/v2/transcript/" + transcript_id
+	
+	http_request.request(
+		polling_endpoint,
+		headers,
+		HTTPClient.METHOD_GET
+	)
+
+func _on_request_complete(_result, response_code, _headers, body):
+	var response_text = body.get_string_from_utf8()
+	
+	print("=== Response Code: ", response_code, " ===\n")
+	#--debugging
+	#print("Response: ", response_text)
+	
+	if response_code != 200:
+		print("API Error: ", response_code)
+		return
+	
+	var json = JSON.new()
+	var parse_result = json.parse(response_text)
+	
+	if parse_result != OK:
+		print("JSON parse error")
+		return
+	
+	var response = json.data
+	#--debugging
+	#print("Response keys: ", response.keys())
+	
+	# Check which endpoint responded
+	if response.has("upload_url"):
+		# Upload complete - got audio URL
+		var audio_url = response["upload_url"]
+		print("✓ Upload successful! URL: ", audio_url)
+		create_transcript_request(audio_url)
+		
+	elif response.has("id") and response.has("status") and transcript_id == "":
+		# Transcript request created - got transcript ID (first time)
+		transcript_id = response["id"]
+		print("✓ Transcript created! ID: ", transcript_id)
+		print("Status: ", response["status"])
+		# Wait 1 second before first poll
+		await get_tree().create_timer(1.0).timeout
+		poll_transcript()
+		
+	elif response.has("status") and transcript_id != "":
+		# Polling response
+		var status = response["status"]
+		print("Status: ", status)
+		
+		if status == "completed":
+			# Done!
+			var transcript_text = response.get("text", "")
+			print("✓ Transcript Text: ", transcript_text)
+			transcription_received(transcript_text)
+			
+		elif status == "error":
+			var error_msg = response.get("error", "Unknown error")
+			push_error("Transcription failed: " + error_msg)
+			print("✗ Transcription failed: ", error_msg)
+			
+		else:
+			# Still processing (queued or processing)
+			print("⏳ Waiting 1 seconds...")
+			await get_tree().create_timer(1.0).timeout
+			poll_transcript()
 
 func create_wav_file(audio_data: PackedByteArray, sample_rate: int) -> PackedByteArray:
 	var wav = PackedByteArray()
@@ -72,13 +154,13 @@ func create_wav_file(audio_data: PackedByteArray, sample_rate: int) -> PackedByt
 	
 	# fmt chunk
 	wav.append_array("fmt ".to_utf8_buffer())
-	wav.append_array(_int_to_bytes(16, 4))  # fmt chunk size
-	wav.append_array(_int_to_bytes(1, 2))   # audio format (PCM)
-	wav.append_array(_int_to_bytes(1, 2))   # channels (mono)
+	wav.append_array(_int_to_bytes(16, 4))
+	wav.append_array(_int_to_bytes(1, 2))
+	wav.append_array(_int_to_bytes(1, 2))
 	wav.append_array(_int_to_bytes(sample_rate, 4))
-	wav.append_array(_int_to_bytes(sample_rate * 2, 4))  # byte rate
-	wav.append_array(_int_to_bytes(2, 2))   # block align
-	wav.append_array(_int_to_bytes(16, 2))  # bits per sample
+	wav.append_array(_int_to_bytes(sample_rate * 2, 4))
+	wav.append_array(_int_to_bytes(2, 2))
+	wav.append_array(_int_to_bytes(16, 2))
 	
 	# data chunk
 	wav.append_array("data".to_utf8_buffer())
@@ -94,25 +176,9 @@ func _int_to_bytes(value: int, num_bytes: int) -> PackedByteArray:
 		value >>= 8
 	return bytes
 
-func _on_transcription_complete(_result, response_code, _headers, body):
-	if response_code == 200:
-		var json = JSON.new()
-		var parse_result = json.parse(body.get_string_from_utf8())
-		
-		if parse_result == OK:
-			var response = json.data
-			var transcribed_text = response.get("text", "")
-			print("Transcription: ", transcribed_text)
-			
-			# Emitting signal or calling function with the text
-			#transcription_received(transcribed_text)
-		else:
-			print("JSON parse error")
-	else:
-		print("API Error: ", response_code)
-		print("Response: ", body.get_string_from_utf8())
-
 # Override this or connect to it
 func transcription_received(text: String):
-	print("Got text: ", text)
+	print("=== TRANSCRIPTION COMPLETE ===")
+	$"../../TranscribedText".set_text(text)
+	print("==============================")
 	# Do something with your transcribed text here!

@@ -33,6 +33,11 @@ version_control/autoload_on_startup=true
 
 enabled=PackedStringArray("res://addons/wakatime/plugin.cfg")
 
+[gui]
+
+theme/custom="uid://c38n6vn1fk4ro"
+theme/custom_font="uid://dqg7eaf8trapo"
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0

@@ -1,0 +1,26 @@
+[gd_resource type="Theme" load_steps=3 format=3 uid="uid://c38n6vn1fk4ro"]
+
+[ext_resource type="StyleBox" uid="uid://bq6bpmpgspam5" path="res://ressources/UI/slider_graber.tres" id="1_kvfvw"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg7tc"]
+bg_color = Color(0.05490196, 0.5647059, 0.40784314, 1)
+border_width_left = 4
+border_width_top = 5
+border_width_right = 4
+border_width_bottom = 5
+border_color = Color(0.04191745, 0.47806603, 0.34330133, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[resource]
+Button/colors/font_color = Color(0.105882354, 0.5647059, 0.40784314, 1)
+Button/colors/font_focus_color = Color(0.105882354, 0.5647059, 0.40784314, 1)
+Button/colors/font_hover_color = Color(0.105882354, 0.5647059, 0.40784314, 1)
+Button/colors/font_hover_pressed_color = Color(0.105882354, 0.5647059, 0.40784314, 1)
+Label/colors/font_color = Color(0.105882354, 0.5647059, 0.40784314, 1)
+VScrollBar/styles/grabber = ExtResource("1_kvfvw")
+VScrollBar/styles/grabber_highlight = ExtResource("1_kvfvw")
+VScrollBar/styles/grabber_pressed = ExtResource("1_kvfvw")
+VScrollBar/styles/scroll = SubResource("StyleBoxFlat_bg7tc")

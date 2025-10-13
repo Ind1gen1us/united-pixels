@@ -1,5 +1,7 @@
 extends Node
+
 @onready var audio_player = $Microphone
+var is_recording: bool = false
 var recording_effect: AudioEffectRecord
 var bus_index: int
 var recording: AudioStreamWAV
@@ -13,30 +15,19 @@ func _ready():
 	
 	print("Microphone setup complete")
 
-func start_recording(): 
-	if recording_effect.is_recording_active():
+
+func start_recording():
+	if not is_recording:
 		print("Recording started...")
-		recording = recording_effect.get_recording()
-		recording_effect.set_recording_active(false)
-		#print(recording.data)
-	else:
+		is_recording = true
 		recording_effect.set_recording_active(true)
+	else:
+		print("Stopping recording...")
+		is_recording = false
+		recording_effect.set_recording_active(false)
+		recording = recording_effect.get_recording()
 		if recording != null:
 			print("Got recording! Duration: ", recording.get_length(), " seconds")
 			$WhisperAPI.transcribe_audio(recording)
 		else:
 			print("No recording found!")
-
-#func stop_recording_and_transcribe():
-	## Stop recording
-	#recording_effect.set_recording_active(false)
-	## Get the recording immediately (no need to wait)
-	##var recording = recording_effect.get_recording()
-	##print(recording.data)
-	##
-	##
-	##if recording != null:
-		##print("Got recording! Duration: ", recording.get_length(), " seconds")
-		##$WhisperAPI.transcribe_audio(recording)
-	##else:
-		##print("No recording found!")

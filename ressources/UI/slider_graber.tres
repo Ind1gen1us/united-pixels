@@ -1,0 +1,7 @@
+[gd_resource type="StyleBoxTexture" load_steps=2 format=3 uid="uid://bq6bpmpgspam5"]
+
+[ext_resource type="Texture2D" uid="uid://dk4woieqj3ewy" path="res://assets/Humble Gift - Paper UI System v1.1/Sprites/Content/5 Holders/15.png" id="1_gj5gn"]
+
+[resource]
+texture = ExtResource("1_gj5gn")
+region_rect = Rect2(4.441742, 3.042698, 5.8862915, 25.34373)

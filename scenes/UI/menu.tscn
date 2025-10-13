@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://bkexg38mocvq7"]
+[gd_scene load_steps=14 format=3 uid="uid://bkexg38mocvq7"]
 
 [ext_resource type="Texture2D" uid="uid://dgrf05n4ub3ak" path="res://assets/Humble Gift - Paper UI System v1.1/Sprites/Book Desk/4.png" id="1_u81ku"]
 [ext_resource type="Texture2D" uid="uid://kqew361kj67f" path="res://assets/Humble Gift - Paper UI System v1.1/Sprites/Paper UI Pack/Folding & Cutout/8 Shop/1.png" id="2_2tfbb"]
@@ -8,18 +8,40 @@
 [ext_resource type="Script" uid="uid://i6b5d472gxi4" path="res://scripts/ui_animation_component.gd" id="6_78n2u"]
 [ext_resource type="Script" uid="uid://be3pivv015je0" path="res://scripts/audio_handling.gd" id="7_ofy2k"]
 [ext_resource type="Script" uid="uid://cb2a5jsicrjkw" path="res://scripts/audio_transcription.gd" id="8_ypw4e"]
+[ext_resource type="FontFile" uid="uid://dhmn8hup8v5gs" path="res://assets/fonts/Retrogression-Regular.otf" id="9_ypw4e"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_78n2u"]
 texture = ExtResource("3_iysyy")
 
 [sub_resource type="AudioStreamMicrophone" id="AudioStreamMicrophone_78n2u"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ofy2k"]
+content_margin_left = 5.0
+draw_center = false
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.050980393, 0.5647059, 0.40784314, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="GDScript" id="GDScript_ofy2k"]
+resource_name = "transcribed_text"
+script/source = "extends RichTextLabel
+"
+
 [node name="Control" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -4.0
+offset_left = -1.0
+offset_top = 32.0
+offset_right = -5.0
+offset_bottom = 32.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -44,6 +66,7 @@ offset_bottom = 679.0
 grow_horizontal = 2
 texture = ExtResource("2_2tfbb")
 region_rect = Rect2(10.069275, 18.014038, 398.16223, 429.98596)
+metadata/_edit_lock_ = true
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 1
@@ -116,7 +139,6 @@ theme_override_styles/pressed = ExtResource("5_ny0ke")
 theme_override_styles/hover = ExtResource("5_ny0ke")
 theme_override_styles/disabled = ExtResource("5_ny0ke")
 theme_override_styles/focus = ExtResource("5_ny0ke")
-text = "Stop"
 icon_alignment = 1
 
 [node name="UIAnimationComponent" type="Node" parent="VBoxContainer/Button2"]
@@ -153,9 +175,31 @@ script = ExtResource("8_ypw4e")
 
 [node name="Microphone" type="AudioStreamPlayer" parent="AudioHandling"]
 stream = SubResource("AudioStreamMicrophone_78n2u")
-volume_db = 10.0
+volume_db = 20.0
 autoplay = true
 bus = &"voice_record"
+
+[node name="TranscribedText" type="RichTextLabel" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -166.0
+offset_top = 28.0
+offset_right = 162.0
+offset_bottom = 74.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/default_color = Color(0.050980393, 0.5647059, 0.40784314, 1)
+theme_override_colors/font_outline_color = Color(0.78775924, 0.78775924, 0.78775924, 1)
+theme_override_fonts/normal_font = ExtResource("9_ypw4e")
+theme_override_fonts/mono_font = ExtResource("9_ypw4e")
+theme_override_font_sizes/normal_font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_ofy2k")
+threaded = true
+script = SubResource("GDScript_ofy2k")
 
 [connection signal="pressed" from="VBoxContainer/Button" to="AudioHandling" method="start_recording"]
 [connection signal="pressed" from="VBoxContainer/Button2" to="AudioHandling" method="stop_recording_and_transcribe"]
