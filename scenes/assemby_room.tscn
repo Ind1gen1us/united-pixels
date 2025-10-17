@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=3 uid="uid://ik3bc2n574nx"]
+[gd_scene load_steps=55 format=3 uid="uid://ik3bc2n574nx"]
 
 [ext_resource type="Texture2D" uid="uid://pvlqktoq6q45" path="res://assets/images/assembly_room.png" id="1_mf65g"]
 [ext_resource type="Texture2D" uid="uid://ktegaxb7c2ym" path="res://assets/images/Idle_2.png" id="2_7npbm"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://dhrffwltehln5" path="res://assets/images/table.png" id="3_ldhha"]
 [ext_resource type="Texture2D" uid="uid://dg411qi6las2r" path="res://assets/images/Idle_2_d2.png" id="3_wa37m"]
 [ext_resource type="Script" uid="uid://cvrtdk5k355y7" path="res://scripts/podium.gd" id="4_gbyw3"]
+[ext_resource type="Texture2D" uid="uid://c4mbagxnoo2tb" path="res://assets/images/IMG_0132.PNG" id="5_xb7ms"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_gbyw3"]
 atlas = ExtResource("2_7npbm")
@@ -212,6 +213,105 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_pjfwe"]
+atlas = ExtResource("5_xb7ms")
+region = Rect2(0, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nfbex"]
+atlas = ExtResource("5_xb7ms")
+region = Rect2(512, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gd01p"]
+atlas = ExtResource("5_xb7ms")
+region = Rect2(1024, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5f8o4"]
+atlas = ExtResource("5_xb7ms")
+region = Rect2(1536, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kskom"]
+atlas = ExtResource("5_xb7ms")
+region = Rect2(2048, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vpj50"]
+atlas = ExtResource("5_xb7ms")
+region = Rect2(2560, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ahksy"]
+atlas = ExtResource("5_xb7ms")
+region = Rect2(3072, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bh5kh"]
+atlas = ExtResource("5_xb7ms")
+region = Rect2(3584, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n6gqv"]
+atlas = ExtResource("5_xb7ms")
+region = Rect2(4096, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_skdtl"]
+atlas = ExtResource("5_xb7ms")
+region = Rect2(4608, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e5pu1"]
+atlas = ExtResource("5_xb7ms")
+region = Rect2(5120, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ay7rk"]
+atlas = ExtResource("5_xb7ms")
+region = Rect2(5632, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_605me"]
+atlas = ExtResource("5_xb7ms")
+region = Rect2(6144, 0, 512, 512)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_p2lpr"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pjfwe")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nfbex")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gd01p")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5f8o4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kskom")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vpj50")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ahksy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bh5kh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n6gqv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_skdtl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e5pu1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ay7rk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_605me")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gbyw3"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wa37m"]
@@ -273,6 +373,13 @@ rotation = -0.010318036
 texture = ExtResource("3_ldhha")
 metadata/_edit_lock_ = true
 
+[node name="Chairman" type="AnimatedSprite2D" parent="."]
+position = Vector2(676.00006, 359)
+scale = Vector2(0.9, 0.9)
+sprite_frames = SubResource("SpriteFrames_p2lpr")
+autoplay = "default"
+flip_h = true
+
 [node name="Podium" type="Button" parent="."]
 custom_minimum_size = Vector2(50, 0)
 offset_left = 604.0
@@ -283,6 +390,7 @@ theme_override_styles/pressed = SubResource("StyleBoxEmpty_gbyw3")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_wa37m")
 flat = true
 script = ExtResource("4_gbyw3")
+metadata/_edit_lock_ = true
 
 [node name="Sprite2D" type="Sprite2D" parent="Podium"]
 material = SubResource("ShaderMaterial_gbyw3")

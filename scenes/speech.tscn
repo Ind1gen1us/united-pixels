@@ -131,3 +131,11 @@ flip_h = true
 position = Vector2(660, 699)
 scale = Vector2(1.262255, 1)
 texture = ExtResource("2_8eamh")
+
+[node name="Button" type="Button" parent="."]
+offset_left = 26.0
+offset_top = 669.0
+offset_right = 63.0
+offset_bottom = 694.0
+theme_override_font_sizes/font_size = 24
+text = "<-- Back"

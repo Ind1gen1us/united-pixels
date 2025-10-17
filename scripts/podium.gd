@@ -13,3 +13,4 @@ func _on_mouse_exited() -> void:
 
 func _on_pressed() -> void:
 	SceneManager.change_scene("speech")
+	
