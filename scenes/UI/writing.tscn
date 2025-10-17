@@ -1,0 +1,340 @@
+[gd_scene load_steps=22 format=3 uid="uid://wafh8kqk60wm"]
+
+[ext_resource type="Texture2D" uid="uid://dgrf05n4ub3ak" path="res://assets/Humble Gift - Paper UI System v1.1/Sprites/Book Desk/4.png" id="1_ogbo0"]
+[ext_resource type="Texture2D" uid="uid://kqew361kj67f" path="res://assets/Humble Gift - Paper UI System v1.1/Sprites/Paper UI Pack/Folding & Cutout/8 Shop/1.png" id="2_1mr3c"]
+[ext_resource type="Texture2D" uid="uid://bhbbtd556dr38" path="res://assets/Humble Gift - Paper UI System v1.1/Sprites/Content/5 Holders/19.png" id="4_uawc3"]
+[ext_resource type="StyleBox" uid="uid://c547uw2ujwt7i" path="res://ressources/UI/menu_button.tres" id="5_671bl"]
+[ext_resource type="Script" uid="uid://i6b5d472gxi4" path="res://scripts/ui_animation_component.gd" id="6_wwvqh"]
+[ext_resource type="Script" uid="uid://c4phmpq2k3dx4" path="res://scripts/text_edit.gd" id="8_cjsux"]
+[ext_resource type="Texture2D" uid="uid://hnw7rmjdfa4d" path="res://assets/images/delegate_hand.PNG" id="8_g1i6f"]
+[ext_resource type="AudioStream" uid="uid://c6fuqpr30r41i" path="res://assets/music/sfx/writing-with-pen-sound-effect.mp3" id="9_cjsux"]
+[ext_resource type="FontFile" uid="uid://dhmn8hup8v5gs" path="res://assets/fonts/Retrogression-Regular.otf" id="9_xho3m"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_g1i6f"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cjsux"]
+atlas = ExtResource("8_g1i6f")
+region = Rect2(0, 0, 1380, 1520)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ogbo0"]
+atlas = ExtResource("8_g1i6f")
+region = Rect2(1380, 0, 1380, 1520)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1mr3c"]
+atlas = ExtResource("8_g1i6f")
+region = Rect2(2760, 0, 1380, 1520)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r66qf"]
+atlas = ExtResource("8_g1i6f")
+region = Rect2(4140, 0, 1380, 1520)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uawc3"]
+atlas = ExtResource("8_g1i6f")
+region = Rect2(5520, 0, 1380, 1520)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_671bl"]
+atlas = ExtResource("8_g1i6f")
+region = Rect2(6900, 0, 1380, 1520)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_wwvqh"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cjsux")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ogbo0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1mr3c")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r66qf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uawc3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_671bl")
+}],
+"loop": true,
+"name": &"default",
+"speed": 9.0
+}]
+
+[sub_resource type="GDScript" id="GDScript_cjsux"]
+script/source = "extends AnimatedSprite2D
+
+@onready var writing_sound = $\"../WritingSound\"
+@onready var _animation = $AnimationPlayer
+@export var lerp_speed: float = 20.0  # Higher = faster movement
+@export var min_distance_to_animate: float = 2.0  # Lower threshold for better tracking
+@export var hand_offset: Vector2 = Vector2(450, 0)  # Start with no offset, tune as needed
+
+var target_position: Vector2
+var is_animating: bool = false
+var entrance_animation_playing: bool = false
+
+func _ready() -> void:
+	target_position = position  
+	stop()
+
+func set_to_default_position(default_pos: Vector2) -> void:
+	position = default_pos  
+	target_position = default_pos
+
+func animate() -> void:
+	entrance_animation_playing = true
+	_animation.play(\"entrance\")
+	await _animation.animation_finished
+	entrance_animation_playing = false
+	print(\"Entrance animation finished, position: \", position)
+
+func _process(delta: float) -> void:
+	# Don't move during entrance animation
+	if entrance_animation_playing:
+		return
+	
+	# Smoothly lerp to target position using LOCAL position
+	var distance = position.distance_to(target_position)
+	if distance > 0.1:
+		position = position.lerp(target_position, lerp_speed * delta)
+		
+		# Play animation if moving and should be animating
+		if is_animating and not is_playing():
+			play(\"default\")
+	else:
+		# Reached target, snap to exact position
+		position = target_position
+		if not is_animating and is_playing():
+			stop()
+
+func move_to(new_position: Vector2) -> void:
+	# Don't update target during entrance animation
+	if entrance_animation_playing:
+		return
+		
+	var adjusted_position = new_position + hand_offset
+	var distance = position.distance_to(adjusted_position)
+	target_position = adjusted_position
+	
+	# Animate even on small movements for better tracking
+	if distance > min_distance_to_animate:
+		is_animating = true
+		if not is_playing():
+			play(\"default\")
+			writing_sound.play()
+			
+	else:
+		# Still move but maybe don't animate for tiny movements
+		is_animating = false
+
+func move_down_line() -> void:
+	# This is called when Enter is pressed
+	# The target position will be updated by move_to() with the new Y value
+	is_animating = true
+
+func stop_writing() -> void:
+	is_animating = false
+	if not is_animating and is_playing():
+		stop()
+		writing_sound.stop()
+"
+
+[sub_resource type="Animation" id="Animation_1mr3c"]
+length = 0.001
+
+[sub_resource type="Animation" id="Animation_ogbo0"]
+resource_name = "entrance"
+length = 0.7
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.33333334, 0.5, 0.7),
+"transitions": PackedFloat32Array(3.0314324, 3.0314324, 3.0314324, 5.0982404),
+"update": 0,
+"values": [Vector2(621, 920), Vector2(621, 700), Vector2(621, 570), Vector2(621, 460)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_r66qf"]
+_data = {
+&"RESET": SubResource("Animation_1mr3c"),
+&"entrance": SubResource("Animation_ogbo0")
+}
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -1.0
+offset_top = 32.0
+offset_right = -5.0
+offset_bottom = 32.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_lock_ = true
+
+[node name="TableTop" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -32.0
+offset_right = 6.0
+offset_bottom = -29.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_ogbo0")
+metadata/_edit_lock_ = true
+
+[node name="NinePatchRect" type="NinePatchRect" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -352.0
+offset_top = 51.0
+offset_right = 359.81836
+offset_bottom = 730.0
+grow_horizontal = 2
+texture = ExtResource("2_1mr3c")
+region_rect = Rect2(10.069275, 18.014038, 398.16223, 429.98596)
+metadata/_edit_lock_ = true
+
+[node name="TextEdit" type="TextEdit" parent="NinePatchRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -214.5
+offset_top = -174.5
+offset_right = 214.5
+offset_bottom = 174.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/caret_color = Color(0.9607843, 0.61960787, 0.29803923, 0)
+theme_override_colors/font_color = Color(0.9607843, 0.61960787, 0.29803923, 1)
+theme_override_colors/font_placeholder_color = Color(0.9607843, 0.61960787, 0.29803923, 1)
+theme_override_fonts/font = ExtResource("9_xho3m")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxEmpty_g1i6f")
+placeholder_text = "Write your resolution here"
+context_menu_enabled = false
+emoji_menu_enabled = false
+shortcut_keys_enabled = false
+drag_and_drop_selection_enabled = false
+middle_mouse_paste_enabled = false
+wrap_mode = 1
+caret_type = 1
+caret_blink = true
+caret_multiple = false
+script = ExtResource("8_cjsux")
+
+[node name="19" type="TextureRect" parent="NinePatchRect"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -186.00003
+offset_top = 50.0
+offset_right = -106.00003
+offset_bottom = 66.0
+grow_horizontal = 2
+scale = Vector2(4.625, 4.625)
+texture = ExtResource("4_uawc3")
+metadata/_edit_lock_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="NinePatchRect"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 284.0
+offset_top = -59.5
+offset_right = 337.0
+offset_bottom = 158.5
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_group_ = true
+
+[node name="Button" type="Button" parent="NinePatchRect/VBoxContainer"]
+custom_minimum_size = Vector2(53, 70)
+layout_mode = 2
+theme_override_styles/normal = ExtResource("5_671bl")
+theme_override_styles/pressed = ExtResource("5_671bl")
+theme_override_styles/hover = ExtResource("5_671bl")
+theme_override_styles/disabled = ExtResource("5_671bl")
+theme_override_styles/focus = ExtResource("5_671bl")
+text = "Record"
+icon_alignment = 1
+
+[node name="UIAnimationComponent" type="Node" parent="NinePatchRect/VBoxContainer/Button"]
+script = ExtResource("6_wwvqh")
+time = 0.1
+x_size = Vector2(20, 0)
+transition = 7
+metadata/_custom_type_script = "uid://i6b5d472gxi4"
+
+[node name="Button2" type="Button" parent="NinePatchRect/VBoxContainer"]
+custom_minimum_size = Vector2(53, 70)
+layout_mode = 2
+theme_override_styles/normal = ExtResource("5_671bl")
+theme_override_styles/pressed = ExtResource("5_671bl")
+theme_override_styles/hover = ExtResource("5_671bl")
+theme_override_styles/disabled = ExtResource("5_671bl")
+theme_override_styles/focus = ExtResource("5_671bl")
+icon_alignment = 1
+
+[node name="UIAnimationComponent" type="Node" parent="NinePatchRect/VBoxContainer/Button2"]
+script = ExtResource("6_wwvqh")
+time = 0.1
+x_size = Vector2(20, 0)
+transition = 7
+metadata/_custom_type_script = "uid://i6b5d472gxi4"
+
+[node name="Button3" type="Button" parent="NinePatchRect/VBoxContainer"]
+custom_minimum_size = Vector2(53, 70)
+layout_mode = 2
+theme_override_styles/normal = ExtResource("5_671bl")
+theme_override_styles/pressed = ExtResource("5_671bl")
+theme_override_styles/hover = ExtResource("5_671bl")
+theme_override_styles/disabled = ExtResource("5_671bl")
+theme_override_styles/focus = ExtResource("5_671bl")
+icon_alignment = 1
+
+[node name="UIAnimationComponent" type="Node" parent="NinePatchRect/VBoxContainer/Button3"]
+script = ExtResource("6_wwvqh")
+time = 0.1
+x_size = Vector2(20, 0)
+transition = 7
+metadata/_custom_type_script = "uid://i6b5d472gxi4"
+
+[node name="Hand" type="AnimatedSprite2D" parent="."]
+position = Vector2(621, 900)
+scale = Vector2(0.28478262, 0.31562498)
+sprite_frames = SubResource("SpriteFrames_wwvqh")
+frame_progress = 0.8354131
+script = SubResource("GDScript_cjsux")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Hand"]
+libraries = {
+&"": SubResource("AnimationLibrary_r66qf")
+}
+
+[node name="WritingSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("9_cjsux")
+
+[connection signal="gui_input" from="NinePatchRect" to="NinePatchRect/TextEdit" method="_on_nine_patch_rect_gui_input"]
+[connection signal="focus_entered" from="NinePatchRect/TextEdit" to="NinePatchRect/TextEdit" method="_on_focus_entered"]
+[connection signal="focus_exited" from="NinePatchRect/TextEdit" to="NinePatchRect/TextEdit" method="_on_focus_exited"]
+[connection signal="text_changed" from="NinePatchRect/TextEdit" to="NinePatchRect/TextEdit" method="_on_text_changed"]
