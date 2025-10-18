@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://by1cwt0hxkx2a"]
+
+[ext_resource type="PackedScene" uid="uid://d3grkr75b3t1p" path="res://scenes/base_delegate.tscn" id="1_84lif"]
+[ext_resource type="SpriteFrames" uid="uid://cdeenl2g6mr0c" path="res://scenes/entities/delegate_player.tres" id="2_84lif"]
+
+[node name="Delegate" instance=ExtResource("1_84lif")]
+position = Vector2(0, 0)
+sprite_frames = ExtResource("2_84lif")
+frame_progress = 0.0038218137

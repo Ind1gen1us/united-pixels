@@ -10,6 +10,9 @@ class_name Entity extends AnimatedSprite2D # all "interactable" entities inherit
 var is_hovered: bool = false
 var can_be_selected: bool = false # toggling the shader outline application
 
+func toggle_selection()->void:
+	can_be_selected = not can_be_selected
+	
 # wrapping the base apply_shader() and remov_shader() to account for the toggling
 func apply_shader(color= null) -> void:
 	if can_be_selected:
@@ -20,7 +23,7 @@ func apply_shader(color= null) -> void:
 
 func remove_shader() -> void:
 	if can_be_selected:
-		remove_shader()
+		shader_component.remove_shader()
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	shader_component.set_material()

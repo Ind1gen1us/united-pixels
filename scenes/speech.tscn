@@ -1,8 +1,12 @@
-[gd_scene load_steps=18 format=3 uid="uid://c5335ok7v1ei3"]
+[gd_scene load_steps=29 format=3 uid="uid://c5335ok7v1ei3"]
 
 [ext_resource type="Texture2D" uid="uid://pvlqktoq6q45" path="res://assets/images/assembly_room.png" id="1_j5wli"]
+[ext_resource type="Script" uid="uid://g40iqkr3ubph" path="res://scripts/speech.gd" id="1_miu8v"]
 [ext_resource type="Texture2D" uid="uid://bdoy32hwedyid" path="res://assets/images/podium2.png" id="2_8eamh"]
 [ext_resource type="Texture2D" uid="uid://ktegaxb7c2ym" path="res://assets/images/Idle_2.png" id="2_s10do"]
+[ext_resource type="Texture2D" uid="uid://dxjyhdo1xliqc" path="res://assets/images/vecteezy_pixel-art-illustration-podcast-mic-pixel.png" id="5_ixlbh"]
+[ext_resource type="Script" uid="uid://be3pivv015je0" path="res://scripts/audio_handling.gd" id="6_f58mw"]
+[ext_resource type="Script" uid="uid://cb2a5jsicrjkw" path="res://scripts/audio_transcription.gd" id="7_x0gc8"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_gbyw3"]
 atlas = ExtResource("2_s10do")
@@ -103,7 +107,112 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="Node2D" type="Node2D"]
+[sub_resource type="GDScript" id="GDScript_miu8v"]
+resource_name = "speaker"
+script/source = "extends AnimatedSprite2D
+
+var speaker: SpriteFrames
+
+func receive_scene_data(data) ->void:
+	speaker = data[\"speaker\"]
+	sprite_frames = speaker
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mldye"]
+
+[sub_resource type="GDScript" id="GDScript_f58mw"]
+resource_name = "record_indicator"
+script/source = "extends Sprite2D
+
+var shader_material := preload(\"res://shaders/outline.gdshader\")
+var default_material
+var shader_applied:= false
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	default_material = material
+
+func apply_shader() -> void:
+	if not shader_applied:
+		default_material.shader = shader_material
+	else:
+		default_material.shader = null
+	shader_applied = not shader_applied
+"
+
+[sub_resource type="Animation" id="Animation_ixlbh"]
+resource_name = "speaking"
+length = 0.75
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("speaker:skew")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.25, 0.5, 0.75),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.017453292519943295, -0.017453292519943295, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("speaker:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.25, 0.5, 0.75),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(8, 7.6), Vector2(8.2, 8), Vector2(7.8, 7.2), Vector2(8, 7.6)]
+}
+
+[sub_resource type="Animation" id="Animation_mldye"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("speaker:skew")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("speaker:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(8, 7.6)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_f58mw"]
+_data = {
+&"RESET": SubResource("Animation_mldye"),
+&"speaking": SubResource("Animation_ixlbh")
+}
+
+[sub_resource type="AudioStreamMicrophone" id="AudioStreamMicrophone_bajkm"]
+
+[node name="speech" type="Node2D"]
+script = ExtResource("1_miu8v")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 anchors_preset = 8
@@ -120,12 +229,12 @@ grow_vertical = 2
 texture = ExtResource("1_j5wli")
 metadata/_edit_lock_ = true
 
-[node name="Delegate" type="AnimatedSprite2D" parent="."]
+[node name="speaker" type="AnimatedSprite2D" parent="."]
 position = Vector2(681, 428.00003)
 scale = Vector2(8, 7.6)
 sprite_frames = SubResource("SpriteFrames_miu8v")
 autoplay = "default"
-flip_h = true
+script = SubResource("GDScript_miu8v")
 
 [node name="CloseUpPodium" type="Sprite2D" parent="."]
 position = Vector2(660, 699)
@@ -139,3 +248,31 @@ offset_right = 63.0
 offset_bottom = 694.0
 theme_override_font_sizes/font_size = 24
 text = "<-- Back"
+
+[node name="RecordIndicator" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_mldye")
+position = Vector2(1188, 74.99999)
+scale = Vector2(0.316, 0.316)
+texture = ExtResource("5_ixlbh")
+script = SubResource("GDScript_f58mw")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_f58mw")
+}
+speed_scale = 2.0
+
+[node name="AudioHandling" type="Node" parent="."]
+script = ExtResource("6_f58mw")
+
+[node name="WhisperAPI" type="Node" parent="AudioHandling"]
+script = ExtResource("7_x0gc8")
+
+[node name="HTTPRequest" type="HTTPRequest" parent="AudioHandling/WhisperAPI"]
+
+[node name="Microphone" type="AudioStreamPlayer" parent="AudioHandling"]
+stream = SubResource("AudioStreamMicrophone_bajkm")
+volume_db = 10.0
+bus = &"voice_record"
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://cytghmob4uerh" path="res://scripts/entity.gd" id="1_gr72c"]
 [ext_resource type="Script" uid="uid://bmklaugr07xmw" path="res://scripts/shader_component.gd" id="2_m0cyi"]
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D"]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" groups=["entity"]]
 scale = Vector2(3.5, 3.5)
 script = ExtResource("1_gr72c")
 
