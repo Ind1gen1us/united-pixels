@@ -8,24 +8,36 @@ class_name Entity extends AnimatedSprite2D # all "interactable" entities inherit
 @onready var shader_component:ShaderComponent = $ShaderComponent
 
 var is_hovered: bool = false
+var can_be_selected: bool = false # toggling the shader outline application
 
+# wrapping the base apply_shader() and remov_shader() to account for the toggling
+func apply_shader(color= null) -> void:
+	if can_be_selected:
+		if color:
+			shader_component.apply_shader(color)
+			return
+		shader_component.apply_shader()
+
+func remove_shader() -> void:
+	if can_be_selected:
+		remove_shader()
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	shader_component.set_material()
 	
 func _on_button_mouse_exited() -> void:
 	is_hovered = false
-	shader_component.remove_shader()
+	remove_shader()
 
 func _on_button_mouse_entered() -> void:
 	is_hovered = true
-	shader_component.apply_shader()
+	apply_shader()
 
 func _on_button_button_up() -> void:
 	# Return to base color when button is released (if still hovering)
 	if is_hovered:
-		shader_component.apply_shader()
+		apply_shader()
 
 func _on_button_button_down() -> void:
 	print(name," selected")
-	shader_component.apply_shader(pressed_outline_color)
+	apply_shader(pressed_outline_color)

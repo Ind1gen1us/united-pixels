@@ -39,7 +39,7 @@ enabled=PackedStringArray("res://addons/wakatime/plugin.cfg")
 
 [global_group]
 
-human_entity="delegates, chairman, and player"
+human_entities="NPC deletages, chairman, and player"
 
 [gui]
 

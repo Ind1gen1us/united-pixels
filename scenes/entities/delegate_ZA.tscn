@@ -110,5 +110,8 @@ animations = [{
 }]
 
 [node name="Delegate" instance=ExtResource("1_cchrs")]
+position = Vector2(0, 0)
 sprite_frames = SubResource("SpriteFrames_dpitn")
 frame_progress = 0.146395
+
+[node name="Button" parent="." index="0" groups=["entity"]]

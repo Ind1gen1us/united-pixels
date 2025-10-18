@@ -2,12 +2,12 @@ class_name Delegate extends Entity
 
 @export var pos_to_add: Vector2 = Vector2(30, 0)
 @export var default_position: Vector2
-@export var entrance_duration: float = 1.0  # Duration of the entrance animation in seconds
+@export var entrance_duration: float = 2.5 # Duration of the entrance animation in seconds
 
 func _ready() -> void:
 	super._ready() # check base class
 	print("default pos: ", default_position)
-	entering()
+
 
 ## Plays the entrance animation when delegates enter the assembly room.
 ## Animates position and fade-in using tweens.
