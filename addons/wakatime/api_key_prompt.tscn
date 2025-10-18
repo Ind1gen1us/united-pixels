@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://dbavhjsqdffsd"]
 
 [node name="api_key_modal" type="PopupPanel"]
-oversampling_override = 1.0
 size = Vector2i(321, 100)
 visible = true
 
@@ -26,11 +25,10 @@ alignment = 1
 custom_minimum_size = Vector2(200, 25)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "9053b92d-516e-407a-8cbd-f1fdf9ca8349"
 placeholder_text = "Enter your Wakatime API Key"
 max_length = 43
-expand_to_text_length = true
 secret = true
+expand_to_text_length = true
 
 [node name="show_btn" type="Button" parent="vbox_container/hbox_container_top"]
 custom_minimum_size = Vector2(60, 25)

@@ -1,0 +1,32 @@
+[gd_scene load_steps=3 format=3 uid="uid://x78t1tq6w2ln"]
+
+[ext_resource type="Script" uid="uid://cytghmob4uerh" path="res://scripts/entity.gd" id="1_gr72c"]
+[ext_resource type="Script" uid="uid://bmklaugr07xmw" path="res://scripts/shader_component.gd" id="2_m0cyi"]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D"]
+scale = Vector2(3.5, 3.5)
+script = ExtResource("1_gr72c")
+
+[node name="Button" type="Button" parent="."]
+modulate = Color(1, 1, 1, 0)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.000002
+offset_top = -25.0
+offset_right = 20.000002
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ShaderComponent" type="Node" parent="."]
+script = ExtResource("2_m0cyi")
+metadata/_custom_type_script = "uid://bmklaugr07xmw"
+
+[connection signal="button_down" from="Button" to="." method="_on_button_button_down"]
+[connection signal="button_up" from="Button" to="." method="_on_button_button_up"]
+[connection signal="mouse_entered" from="Button" to="." method="_on_button_mouse_entered"]
+[connection signal="mouse_exited" from="Button" to="." method="_on_button_mouse_exited"]
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

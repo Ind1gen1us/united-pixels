@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://d3grkr75b3t1p"]
+
+[ext_resource type="PackedScene" uid="uid://x78t1tq6w2ln" path="res://scenes/entity.tscn" id="1_upvye"]
+[ext_resource type="Script" uid="uid://bpy1bwdir2umv" path="res://scripts/base_delegate.gd" id="3_ko3la"]
+
+[node name="Delegate" instance=ExtResource("1_upvye")]
+position = Vector2(183.99998, 491.99997)
+autoplay = "default"
+script = ExtResource("3_ko3la")
+pos_to_add = Vector2(30, 0)
+default_position = Vector2(0, 0)
+entrance_duration = 1.0
+pressed_outline_color = Color(1, 1, 1, 1)
+
+[node name="Button" parent="." index="0"]
+offset_left = -84.0
+offset_top = -89.0
+offset_right = -44.0
+offset_bottom = -39.0
