@@ -186,6 +186,7 @@ metadata/_edit_lock_ = true
 [node name="Player" parent="." instance=ExtResource("2_wy0g6")]
 position = Vector2(161, 396)
 default_position = Vector2(161, 396)
+base_outline_color = Color(0.8060311, 0.553514, 0.0038398714, 1)
 
 [node name="Delegate" parent="." instance=ExtResource("3_wa37m")]
 position = Vector2(1164.0001, 390)
@@ -193,6 +194,7 @@ flip_h = true
 pos_to_add = Vector2(-30, 0)
 default_position = Vector2(1164, 390)
 entrance_duration = 2.5
+base_outline_color = Color(0.89411765, 0.84705883, 0.14117648, 1)
 
 [node name="Table2" type="Sprite2D" parent="."]
 position = Vector2(1216.0001, 605)
@@ -219,6 +221,7 @@ outline_thickness = 3.0
 [node name="Podium" parent="." instance=ExtResource("8_6edgc")]
 position = Vector2(667, 478)
 script = SubResource("GDScript_xb7ms")
+base_outline_color = Color(0.253321, 0.47389543, 1, 1)
 outline_thickness = 7.0
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]

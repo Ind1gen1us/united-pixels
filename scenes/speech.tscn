@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://c5335ok7v1ei3"]
+[gd_scene load_steps=31 format=3 uid="uid://c5335ok7v1ei3"]
 
 [ext_resource type="Texture2D" uid="uid://pvlqktoq6q45" path="res://assets/images/assembly_room.png" id="1_j5wli"]
 [ext_resource type="Script" uid="uid://g40iqkr3ubph" path="res://scripts/speech.gd" id="1_miu8v"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://dxjyhdo1xliqc" path="res://assets/images/vecteezy_pixel-art-illustration-podcast-mic-pixel.png" id="5_ixlbh"]
 [ext_resource type="Script" uid="uid://be3pivv015je0" path="res://scripts/audio_handling.gd" id="6_f58mw"]
 [ext_resource type="Script" uid="uid://cb2a5jsicrjkw" path="res://scripts/audio_transcription.gd" id="7_x0gc8"]
+[ext_resource type="PackedScene" uid="uid://cq5iy7qull7ap" path="res://scenes/entities/microphone.tscn" id="8_x0gc8"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_gbyw3"]
 atlas = ExtResource("2_s10do")
@@ -112,19 +113,87 @@ resource_name = "speaker"
 script/source = "extends AnimatedSprite2D
 
 var speaker: SpriteFrames
-
+@onready var  player = $AnimationPlayer
+@onready var mic  = $\"../Microphone\"
 func receive_scene_data(data) ->void:
 	speaker = data[\"speaker\"]
 	sprite_frames = speaker
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass
-
+	mic.is_speaking.connect(speak)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	pass
+
+func speak(_flag) ->void:
+	if _flag: 
+		player.play(\"speaking\")
+	else:
+		player.stop()
 "
+
+[sub_resource type="Animation" id="Animation_mldye"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Speaker:skew")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Speaker:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(8, 7.6)]
+}
+
+[sub_resource type="Animation" id="Animation_ixlbh"]
+resource_name = "speaking"
+length = 0.75
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Speaker:skew")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.25, 0.5, 0.75),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.01745329251994329, -0.01745329251994329, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Speaker:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.25, 0.5, 0.75),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(8, 7.6), Vector2(8.2, 8), Vector2(7.8, 7.2), Vector2(8, 7.6)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_f58mw"]
+_data = {
+&"RESET": SubResource("Animation_mldye"),
+&"speaking": SubResource("Animation_ixlbh")
+}
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_mldye"]
 
@@ -147,69 +216,67 @@ func apply_shader() -> void:
 	shader_applied = not shader_applied
 "
 
-[sub_resource type="Animation" id="Animation_ixlbh"]
-resource_name = "speaking"
-length = 0.75
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("speaker:skew")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.25, 0.5, 0.75),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 0,
-"values": [0.0, 0.017453292519943295, -0.017453292519943295, 0.0]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("speaker:scale")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.25, 0.5, 0.75),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 0,
-"values": [Vector2(8, 7.6), Vector2(8.2, 8), Vector2(7.8, 7.2), Vector2(8, 7.6)]
-}
-
-[sub_resource type="Animation" id="Animation_mldye"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("speaker:skew")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("speaker:scale")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(8, 7.6)]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_f58mw"]
-_data = {
-&"RESET": SubResource("Animation_mldye"),
-&"speaking": SubResource("Animation_ixlbh")
-}
-
 [sub_resource type="AudioStreamMicrophone" id="AudioStreamMicrophone_bajkm"]
+
+[sub_resource type="GDScript" id="GDScript_x0gc8"]
+resource_name = "mic_indicator"
+script/source = "extends Entity
+
+signal is_speaking(flag: bool)
+var is_recording: bool = false
+@onready var audio_manager = $\"../AudioHandling\"
+
+func _ready() -> void:
+	super._ready()
+	# Enable selection so shader can be applied
+	can_be_selected = true
+
+## Overriden method to maintain recording color during hover
+func _on_button_mouse_entered() -> void:
+	is_hovered = true
+	if not is_recording:
+		apply_shader()  # appling base color only if not recording
+
+## Overriden method to restore recording color when mouse exits during recording
+func _on_button_mouse_exited() -> void:
+	is_hovered = false
+	if is_recording:
+		apply_shader(pressed_outline_color)  # keep recording color
+	else:
+		remove_shader()  # removing shader if not recording
+
+## Override to prevent color change on release
+func _on_button_button_up() -> void:
+	if is_recording and is_hovered:
+		apply_shader(pressed_outline_color)  # Restore recording color if still hovering
+
+## Toggle recording state and apply/remove shader accordingly
+func _on_button_button_down() -> void:
+	is_recording = not is_recording
+	
+	if is_recording:
+		print(name, \" recording started\")
+		apply_shader(pressed_outline_color)  # Show outline when recording
+		start_recording()
+	else:
+		print(name, \" recording stopped\")
+		if is_hovered:
+			apply_shader()  # Show hover color if still hovering
+		else:
+			remove_shader()  # Remove outline when not recording
+		stop_recording()
+
+## Start recording functionality
+func start_recording() -> void:
+	is_speaking.emit(true) # playing speaking animation in the Speaker node
+	audio_manager.start_recording()
+
+
+## Stop recording functionality
+func stop_recording() -> void:
+	is_speaking.emit(false) # stoping the animation
+
+"
 
 [node name="speech" type="Node2D"]
 script = ExtResource("1_miu8v")
@@ -229,12 +296,19 @@ grow_vertical = 2
 texture = ExtResource("1_j5wli")
 metadata/_edit_lock_ = true
 
-[node name="speaker" type="AnimatedSprite2D" parent="."]
+[node name="Speaker" type="AnimatedSprite2D" parent="."]
 position = Vector2(681, 428.00003)
 scale = Vector2(8, 7.6)
 sprite_frames = SubResource("SpriteFrames_miu8v")
 autoplay = "default"
 script = SubResource("GDScript_miu8v")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Speaker"]
+root_node = NodePath("../..")
+libraries = {
+&"": SubResource("AnimationLibrary_f58mw")
+}
+speed_scale = 2.0
 
 [node name="CloseUpPodium" type="Sprite2D" parent="."]
 position = Vector2(660, 699)
@@ -250,17 +324,12 @@ theme_override_font_sizes/font_size = 24
 text = "<-- Back"
 
 [node name="RecordIndicator" type="Sprite2D" parent="."]
+visible = false
 material = SubResource("ShaderMaterial_mldye")
-position = Vector2(1188, 74.99999)
+position = Vector2(1216, 658)
 scale = Vector2(0.316, 0.316)
 texture = ExtResource("5_ixlbh")
 script = SubResource("GDScript_f58mw")
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_f58mw")
-}
-speed_scale = 2.0
 
 [node name="AudioHandling" type="Node" parent="."]
 script = ExtResource("6_f58mw")
@@ -274,5 +343,10 @@ script = ExtResource("7_x0gc8")
 stream = SubResource("AudioStreamMicrophone_bajkm")
 volume_db = 10.0
 bus = &"voice_record"
+
+[node name="Microphone" parent="." instance=ExtResource("8_x0gc8")]
+position = Vector2(1130, 652)
+script = SubResource("GDScript_x0gc8")
+outline_thickness = 5.0
 
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

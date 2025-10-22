@@ -1,7 +1,6 @@
 extends Node
 
 @onready var audio_player = $Microphone
-@onready var recording_icon = $"../RecordIndicator"
 var is_recording: bool = false
 var recording_effect: AudioEffectRecord
 var bus_index: int
@@ -32,4 +31,3 @@ func start_recording():
 			$WhisperAPI.transcribe_audio(recording)
 		else:
 			print("No recording found!")
-	recording_icon.apply_shader()

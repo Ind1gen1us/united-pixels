@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3 uid="uid://cq5iy7qull7ap"]
+
+[ext_resource type="PackedScene" uid="uid://x78t1tq6w2ln" path="res://scenes/entity.tscn" id="1_yrbnd"]
+[ext_resource type="Texture2D" uid="uid://dxjyhdo1xliqc" path="res://assets/images/vecteezy_pixel-art-illustration-podcast-mic-pixel.png" id="2_a6bka"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_n6x4r"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_a6bka")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="AnimatedSprite2D" instance=ExtResource("1_yrbnd")]
+scale = Vector2(0.3, 0.3)
+sprite_frames = SubResource("SpriteFrames_n6x4r")
+
+[node name="Button" parent="." index="0"]
+offset_left = -319.99997
+offset_top = -375.0
+offset_right = -179.99997
+offset_bottom = -184.99998

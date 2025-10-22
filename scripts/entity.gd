@@ -8,7 +8,7 @@ class_name Entity extends AnimatedSprite2D # all "interactable" entities inherit
 @onready var shader_component:ShaderComponent = $ShaderComponent
 
 var is_hovered: bool = false
-var can_be_selected: bool = false # toggling the shader outline application
+@export var can_be_selected: bool = false # toggling the shader outline application
 
 func toggle_selection()->void:
 	can_be_selected = not can_be_selected
